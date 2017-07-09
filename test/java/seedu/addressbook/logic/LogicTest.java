@@ -1,10 +1,7 @@
 package seedu.addressbook.logic;
 
-
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import seedu.addressbook.commands.CommandResult;
 import seedu.addressbook.commands.*;
 import seedu.addressbook.common.Messages;
@@ -12,7 +9,8 @@ import seedu.addressbook.data.AddressBook;
 import seedu.addressbook.data.person.*;
 import seedu.addressbook.data.tag.Tag;
 import seedu.addressbook.data.tag.UniqueTagList;
-import seedu.addressbook.storage.StorageFile;
+import seedu.addressbook.storage.Storage;
+import seedu.addressbook.storage.StorageStub;
 
 import java.util.*;
 
@@ -22,22 +20,16 @@ import static seedu.addressbook.common.Messages.*;
 
 public class LogicTest {
 
-    /**
-     * See https://github.com/junit-team/junit4/wiki/rules#temporaryfolder-rule
-     */
-    @Rule
-    public TemporaryFolder saveFolder = new TemporaryFolder();
-
-    private StorageFile saveFile;
+    private Storage storage;
     private AddressBook addressBook;
     private Logic logic;
 
     @Before
     public void setup() throws Exception {
-        saveFile = new StorageFile(saveFolder.newFile("testSaveFile.txt").getPath());
+        storage = new StorageStub();
         addressBook = new AddressBook();
-        saveFile.save(addressBook);
-        logic = new Logic(saveFile, addressBook);
+        storage.save(addressBook);
+        logic = new Logic(storage, addressBook);
     }
 
     @Test
@@ -90,7 +82,7 @@ public class LogicTest {
         //Confirm the state of data is as expected
         assertEquals(expectedAddressBook, addressBook);
         assertEquals(lastShownList, logic.getLastShownList());
-        assertEquals(addressBook, saveFile.load());
+        assertEquals(addressBook, storage.load());
     }
 
 
